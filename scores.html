@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Productivity Scores</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>Productivity Scores Data</h2>
+    <div id="table-container">Loading data...</div>
+
+    <script>
+        // Fetch the CSV file from your server
+        fetch('productivity_scores.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n');
+                let tableHtml = '<table><thead><tr>';
+                
+                // Create Headers (from the first row)
+                const headers = rows[0].split(',');
+                headers.forEach(header => {
+                    tableHtml += `<th>${header}</th>`;
+                });
+                tableHtml += '</tr></thead><tbody>';
+
+                // Create Rows
+                for (let i = 1; i < rows.length; i++) {
+                    if (rows[i].trim() === '') continue; // Skip empty lines
+                    tableHtml += '<tr>';
+                    const cells = rows[i].split(',');
+                    cells.forEach(cell => {
+                        tableHtml += `<td>${cell}</td>`;
+                    });
+                    tableHtml += '</tr>';
+                }
+
+                tableHtml += '</tbody></table>';
+                document.getElementById('table-container').innerHTML = tableHtml;
+            })
+            .catch(error => {
+                document.getElementById('table-container').innerHTML = "Error loading CSV: " + error;
+            });
+    </script>
+</body>
+</html>
